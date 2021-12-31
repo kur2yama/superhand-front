@@ -80,3 +80,12 @@ export function postRateApi(params) {
     ]
   })
 }
+
+// 获取微信配置信息
+export function getwxconfigApi(params) {
+  return request({
+    url: '/api/mallExchange/wxshare',
+    method: 'get',
+    params
+  })
+}

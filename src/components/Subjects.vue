@@ -8,9 +8,9 @@
         </span>
         <span class="title">{{item.name}}</span>
         <span class="total">{{item.total}}项</span>
-      </li>
-      <van-empty description="暂无数据" v-if="listData.length == 0"/>
+      </li> 
     </ul>
+    <van-empty description="暂无数据" v-if="listData.length == 0"/>
   </div>
 </van-pull-refresh>
 </template>

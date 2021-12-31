@@ -63,11 +63,13 @@
 <script>
 import { getProjectlistApi ,getSettingApi} from '../api/post';
 import Header from '../components/header/Header.vue'
+import {wxconfig} from "../utils/wxconfig";
 export default {
   name: 'Section',
   components: {
     Header
   },
+  mixins:[wxconfig],
   data(){
     return{
       keywords:'',
@@ -83,6 +85,7 @@ export default {
   mounted(){
     this.getSetting();
     this.getList();
+
   },
   methods:{
     getSetting(){
@@ -90,6 +93,14 @@ export default {
       getSettingApi().then(res =>{
         if(res.state){
           _this.showRate = res.data.score==1?true:false;
+          _this.$store.dispatch('changeTitle',res.data.project_title);
+          _this.$store.dispatch('updateSetting',res.data);
+          document.title = res.data.share_title;
+          _this.wxready({
+            title: res.data.share_title,
+            desc: res.data.share_desc,
+            link: location.href
+          })
         }
       }).catch(error => {
         console.log(error)
@@ -113,7 +124,7 @@ export default {
         if(res.state){
           _this.listData = res.data;
         }
-      }).catch(res=>{
+      }).catch(err=>{
 
       })
     },

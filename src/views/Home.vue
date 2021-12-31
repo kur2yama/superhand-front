@@ -11,8 +11,8 @@
       </div>
     </div>
     <div class="main">
-      <ul class="switchbar">
-        <li :class="{'active':tapType == tab.type}" @click="tapType = tab.type" v-for="(tab,i) in nav" :key="i">{{tab.name}}</li>
+      <ul class="switchbar" v-if="(navigation&&navigation.length>1) || (navigation.length==1&&navigation.indexOf('责任单位')==-1)">
+        <li :class="{'active':tapType == tab.type}" @click="tapType = tab.type" v-for="(tab,i) in nav" :key="i" v-if="navigation&&navigation.indexOf(tab.name)>-1">{{tab.name}}</li>
       </ul>
       <component :is="component[tapType]"></component>
     </div>
@@ -27,6 +27,7 @@ import Companys from '../components/Companys.vue'
 import Leaders from '../components/Leaders.vue'
 import Subjects from '../components/Subjects.vue'
 import {getSettingApi} from '../api/post';
+import {wxconfig} from "../utils/wxconfig";
 export default {
   name: 'Home',
   components: {
@@ -35,6 +36,7 @@ export default {
     Subjects,
     Header
   },
+  mixins:[wxconfig],
   data(){
     return{
       component:{
@@ -48,12 +50,12 @@ export default {
       tapType:'companys',
       ico: require('../assets/images/notice.png'),
       banner:'',
-      notice:{}
+      notice:{},
+      navigation:[]
     }
   },
   mounted(){
     this.getSetting();
-    this.$store.dispatch('changeTitle','项目督办');
   },
   methods:{
     getSetting(){
@@ -62,6 +64,20 @@ export default {
         if(res.state){
           _this.banner = res.data.img;
           _this.notice = res.data;
+          _this.navigation = res.data.navigation?res.data.navigation:[];
+          if(_this.navigation.indexOf('责任单位')==-1){
+            _this.tapType = _this.nav.filter((val)=>{
+              return val.name == res.data.navigation[0];
+            })[0]['type'];
+          }
+          _this.$store.dispatch('changeTitle',res.data.project_title);
+          _this.$store.dispatch('updateSetting',res.data);
+          document.title = res.data.share_title;
+          _this.wxready({
+            title: res.data.share_title,
+            desc: res.data.share_desc,
+            link: location.href
+          })
         }
       }).catch(error => {
         console.log(error)

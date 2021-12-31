@@ -271,8 +271,8 @@ export default {
       if(mc.isClient()){
         var _this = this;
         mc.userGetInfo(function(res){
-          if(res.data.memberid){
-            _this.memberid = res.data.memberid;
+          if(res.state=='1'){
+            _this.memberid = res.data.id;
             _this.isvisible = true;
           }else{
             mc.userLogin();

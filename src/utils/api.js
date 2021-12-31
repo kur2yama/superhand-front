@@ -19,7 +19,7 @@ export default function request(config) {
     // config.headers.Authorization = window.sessionStorage.getItem('token');
     // config.headers['Device-ID'] =  window.localStorage.getItem('Device-ID')
     //打包前打开 ↓↓↓↓↓
-    config.url = config.url.split(/\/api\//)[1];
+    // config.url = config.url.split(/\/api\//)[1];
     return config
   }, error => {
     console.log('请求失败', error);

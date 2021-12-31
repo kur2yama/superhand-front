@@ -5,7 +5,7 @@
       <div class="base-info">
         <div class="title">{{ detail.name }}</div>
         <div class="thumb">
-          <van-image :src="detail.thumb" />
+          <van-image :src="detail.thumb" crossorigin="anonymous" />
         </div>
         <div class="content" v-html="detail.content"></div>
         <div class="duty">
@@ -32,6 +32,7 @@
               <p class="desc">{{ item.desc }}</p>
               <p>发布单位: {{ item.pubcompany }}</p>
               <p>发布人: {{ item.pubeditor }}</p>
+              <p class="view-pic" v-if="item.file"> <span @click="viewpic(item.file)">查看图片</span> </p>
             </div>
           </li>
         </ul>
@@ -45,6 +46,12 @@
       :options="options"
       @select="onSelect"
     />
+    <!-- <van-dialog v-model="isViewPic" show-cancel-button>
+      <div style="padding:20px;">
+        <img :src="viewfile" />
+      </div>
+      
+    </van-dialog> -->
   </div>
 </template>
 
@@ -53,25 +60,38 @@
 import Header from "../components/header/Header.vue";
 import Rate from "../components/Rate.vue";
 import { getProjectDetailApi , getSettingApi} from "../api/post";
+import { ImagePreview } from 'vant';
+import {wxconfig} from "../utils/wxconfig";
 export default {
   name: "Home",
   components: {
     Header,
     Rate,
+    [ImagePreview.Component.name]: ImagePreview.Component,
   },
+  mixins:[wxconfig],
   data() {
     return {
       detail: {},
       showRate:false,
       showShare:false,
+      viewfile:'',
+      isViewPic:false,
       options:[
         { name: '下载长图', icon: 'poster' },
-      ]
+      ],
+      shareImg:'../assets/images/icon.png'
     };
   },
   mounted() {
     this.getDetail();
     this.getSetting();
+    if(mc.isClient()){
+      this.options=[
+        { name: '微信', icon: 'wechat' },
+        { name: '下载长图', icon: 'poster' }
+      ];
+    }
   },
   methods: {
     getSetting(){
@@ -94,11 +114,25 @@ export default {
           if (res.state) {
             _this.detail = res.data;
             this.$forceUpdate();
+
+            _this.wxready({
+              title: res.data.name,
+              desc: res.data.name,
+              link: location.href,
+              imgUrl: res.data.thumb,
+            })
+
           }
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    // 进度中图片预览
+    viewpic(pic){
+      // this.viewfile = pic;
+      // this.isViewPic = true;
+      ImagePreview([pic]);
     },
     saveImage(divText, imgText) {
       let canvasID = this.$refs[divText];
@@ -139,9 +173,11 @@ export default {
 			let image = new Image();
 
 			//解决跨域问题
-			image.setAttribute('crossOrigin', 'anonymous');
-			
-			image.src = imageUrl
+			// image.setAttribute('crossOrigin', 'anonymous');
+			// image.src = imageUrl
+      image.crossOrigin = "*"
+      image.src = imageUrl + '?v=' + Math.random()
+
 			//image.onload为异步加载
 			image.onload = () => {
 				var canvas = document.createElement("canvas");
@@ -163,13 +199,21 @@ export default {
     onSelect(option){
       if(option.icon=='poster'){
         this.saveImage('html2canvas','share')
+      }else if(option.icon=='wechat'){
+        var option = {
+          title: this.detail.name,
+          content:this.detail.name ,
+          image: this.shareImg,
+          url: location.href
+        }
+        mc.shareWeChat(option)
       }
     }
   },
   filters: {
     timeFilter(val) {
       if(val){
-        var date = new Date(val.replace('-','/')),
+        var date = new Date(val.replace(/-/g,'/')),
         year = date.getFullYear(),
         month = date.getMonth() + 1,
         day = date.getDate();
@@ -285,6 +329,11 @@ export default {
               &.desc {
                 color: #000;
                 font-size: 0.14rem;
+              }
+              &.view-pic{
+                display: flex;
+                justify-content: flex-end;
+                color:#1989fa;
               }
             }
           }
