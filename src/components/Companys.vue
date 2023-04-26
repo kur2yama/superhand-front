@@ -2,7 +2,10 @@
 <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功" style="min-height: calc(100vh - 60vw);">
   <div class="company-wrapper">
     <div class="company-wrap" v-for="section in listData" :key="section.id" v-if="section.company&&section.company.length>0">
-      <div class="left" :style="{'background-color':section.color}"><i>{{section.number}}</i></div>
+      <div class="left" :style="{'background-color':section.color}">
+        <i>{{section.number}}</i>
+        <span>{{section.name}}</span>
+      </div>
       <div class="right">
         <div class="section" v-for="item in section.company" :key="item.id" @click="viewDetail(item)">
           <div class="top">
@@ -17,7 +20,7 @@
           <div class="bottom">
             <div class="sum">在办<span class="in">{{item.going}}</span></div>
             <div class="sum">完成<span class="done">{{item.finish}}</span></div>
-            <div class="sum">超时<span class="over">{{item.timeout}}</span></div>
+<!--            <div class="sum">超时<span class="over">{{item.timeout}}</span></div>-->
           </div>
         </div>
       </div>
@@ -72,22 +75,33 @@ export default {
     .company-wrap{
       display:flex;
       margin-bottom:0.1rem;
+      flex-direction: column;
       .left{
-        width:0.4rem;
+        width:100%;
+        height:0.4rem;
         display:flex;
         align-items:center;
         justify-content: center;
-        font-size:0.26rem;
+        font-size:0.24rem;
         color:#ffffff;
-        border-radius: 5px 0 0 5px;
+        border-radius: 6px 6px 0 0;
+        position: relative;
+        i{
+          position: absolute;
+          top:0;
+          left:0.05rem;
+          display: block;
+          line-height: 0.4rem;
+        }
+        span{
+          font-size: 0.18rem;
+        }
       }
       .right{
         flex:1;
-        margin-left:6px;
         .section{
           height:0.96rem;
           background-color: #fff;
-          border-radius: 0 5px 5px 0;
           box-shadow: 0px 6px 12px 0px rgba(212, 212, 212, 0.3);
           &:not(:last-child){
             margin-bottom:0.1rem;
@@ -113,10 +127,11 @@ export default {
             justify-content: space-between;
             align-items: center;
             .sum{
+              padding-left:0.1rem;
               flex:1;
               font-size:0.12rem;
               display: flex;
-              justify-content: center;
+              justify-content: flex-start;
               align-items: center;
               span{
                 width:0.55rem;

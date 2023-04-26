@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <!-- 登录模块 end-->
+    <!-- 登录模块-->
     <div
       class="loginDialog vertical-box"
       ontouchmove="return false"

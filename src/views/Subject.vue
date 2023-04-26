@@ -4,7 +4,7 @@
     <div class="main" ref="html2canvas">
       <div class="base-info">
         <div class="title">{{ detail.name }}</div>
-        <div class="thumb">
+        <div class="thumb" v-if="detail.thumb&&detail.thumb!=''">
           <van-image :src="detail.thumb" crossorigin="anonymous" />
         </div>
         <div class="content" v-html="detail.content"></div>
@@ -13,7 +13,7 @@
             领衔领导: {{ detail.lname }}&nbsp;&nbsp;&nbsp;&nbsp;责任单位:
             {{ detail.cname }}
           </p>
-          <p>完成时间: {{ detail.endtime | timeFilter }}</p>
+          <p v-if="detail.endtime&&detail.endtime!=''">完成时间: {{ detail.endtime | timeFilter }}</p>
         </div>
       </div>
       <div class="process-info" v-if="detail && detail.rate">

@@ -22,7 +22,7 @@ const store = new Vuex.Store({
             context.commit('CHANGE_TITLE',txt)
         },
         updateSetting(context,data) {
-            context.commit('CHANGE_TITLE',data)
+            context.commit('UPDATE_SETTING',data)
             document.title = data.share_title?data.share_title:'项目督办';
         }
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="header-wrapper">
-    <div class="title">{{title}}</div>
+    <div class="title">{{$store.state.headerTitle}}</div>
     <div class="back" @click="goBack()"><van-icon name="arrow-left" color="#ffffff" size="16"/></div>
     <div class="operate" v-if="hasOperate" @click="handle()"><van-icon name="ellipsis" color="#ffffff" size="16"/></div>
   </div>
@@ -25,12 +25,12 @@ export default {
     }
   },
   mounted(){
-    
+
   },
   methods:{
     goBack(){
       if(this.level == 2){
-        this.$store.dispatch('changeTitle','项目督办');
+        this.$store.dispatch('changeTitle',this.$store.state.setting.project_title);
       }
       this.$router.back(-1);
     },

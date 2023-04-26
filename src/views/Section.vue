@@ -30,7 +30,7 @@
           <span>责任领导: {{item.lname}}</span>
           <span>责任单位: {{item.cname}}</span>
         </div>
-        <div class="duty col">
+        <div class="duty col" v-if="item.endtime&&item.endtime!=''">
           <span>完成时间: {{item.endtime | timeFilter}}</span>
         </div>
         <div class="process-wrap col">
@@ -199,7 +199,6 @@ export default {
         margin-bottom:0.1rem;
         box-shadow: 0px 6px 12px 0px rgba(212, 212, 212, 0.3);
         .col{
-          height:0.26rem;
           line-height: 0.26rem;
         }
         
